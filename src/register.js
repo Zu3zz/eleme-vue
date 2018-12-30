@@ -1,5 +1,5 @@
 import { createAPI } from 'cube-ui'
-import VUE from 'vue'
+import Vue from 'vue'
 import HeaderDetail from 'components/header-detail/header-detail'
 
-createAPI(VUE, HeaderDetail)
+createAPI(Vue, HeaderDetail)

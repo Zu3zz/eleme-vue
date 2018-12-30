@@ -1,7 +1,8 @@
 <template>
   <div class="tab">
     <cube-tab-bar
-      :showSlider="true"
+      :useTransition=false
+      :showSlider=true
       v-model="selectedLabel"
       :data="tabs"
       ref="tabBar"
@@ -10,20 +11,17 @@
     </cube-tab-bar>
     <div class="slider-wrapper">
       <cube-slide
-        :loop="false"
-        :auto-play="false"
-        :show-dots="false"
-        :inital-index="index"
+        :loop=false
+        :auto-play=false
+        :show-dots=false
+        :initial-index="index"
         ref="slide"
+        @change="onChange"
+        @scroll="onScroll"
+        :options="slideOptions"
       >
-        <cube-slide-item>
-          <Goods></Goods>
-        </cube-slide-item>
-        <cube-slide-item>
-          <Seller></Seller>
-        </cube-slide-item>
-        <cube-slide-item>
-          <Ratings></Ratings>
+        <cube-slide-item  v-for="(tab,index) in tabs" :key="index">
+          <component :is="tab.component" :data="tab.data"></component>
         </cube-slide-item>
       </cube-slide>
     </div>
@@ -31,22 +29,28 @@
 </template>
 
 <script>
-  import Goods from 'components/goods/goods'
-  import Seller from 'components/seller/seller'
-  import Ratings from 'components/ratings/ratings'
-
   export default {
     name: 'tab',
+    props: {
+      tabs: {
+        type: Array,
+        default () {
+          return {}
+        }
+      },
+      initialIndex: {
+        type: Number,
+        default: 0
+      }
+    },
     data () {
       return {
         index: 0,
-        tabs: [{
-          label: '商品'
-        }, {
-          label: '评价'
-        }, {
-          label: '商家'
-        }]
+        slideOptions: {
+          listenScroll: true,
+          probeType: 3,
+          directionLockThreshold: 0
+        }
       }
     },
     computed: {
@@ -61,22 +65,28 @@
         }
       }
     },
-    components: {
-      Goods,
-      Seller,
-      Ratings
+    methods: {
+      onChange (current) {
+        this.index = current
+      },
+      onScroll (pos) {
+        const tabBarWidth = this.$refs.tabBar.$el.clientWidth
+        const sliderWidth = this.$refs.slide.slide.scrollerWidth
+        const transform = -pos.x / sliderWidth * tabBarWidth
+        this.$refs.tabBar.setSliderTransform(transform)
+      }
     }
   }
 </script>
 
-<style scoped lang="stylus">
+<style lang="stylus" scoped>
   @import "~common/stylus/variable"
   .tab
-    >>> .cube-tab
-      padding: 10px 0
     display: flex
     flex-direction: column
-    height: 100%
+    height: 100px
+    >>> .cube-tab
+      padding: 10px 0
     .slider-wrapper
       flex: 1
       overflow: hidden

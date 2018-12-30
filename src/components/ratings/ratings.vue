@@ -1,10 +1,10 @@
 <template>
-    <div></div>
+    <div>I am rating</div>
 </template>
 
 <script>
   export default {
-    name: ''
+    name: 'ratings'
   }
 </script>
 
