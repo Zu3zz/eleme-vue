@@ -8,6 +8,7 @@
               <i class="icon-shopping_cart" :class="{'hightlight':totalCount>0}"></i>
             </div>
             <div class="num" v-show="totalCount>0">
+              <bubble :num="totalCount"></bubble>
             </div>
           </div>
           <div class="price" :class="{'highlight':totalCount>0}">￥{{totalPrice}}</div>
