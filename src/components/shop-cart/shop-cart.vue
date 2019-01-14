@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="shopcart">
-      <div class="content">
+      <div class="content" @click="toggleList">
         <div class="content-left">
           <div class="logo-wrapper">
             <div class="logo" :class="{'highlight':totalCount>0}">
-              <i class="icon-shopping_cart" :class="{'hightlight':totalCount>0}"></i>
+              <i class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></i>
             </div>
             <div class="num" v-show="totalCount>0">
               <bubble :num="totalCount"></bubble>
@@ -110,6 +110,7 @@
     },
     created () {
       this.dropBalls = []
+      this.listFold = true
     },
     methods: {
       drop (el) {
@@ -146,6 +147,34 @@
           ball.show = false
           el.style.display = 'none'
         }
+      },
+      toggleList () {
+        if (this.listFold) {
+          if (!this.totalCount) {
+            return
+          }
+          this.listFold = false
+          this._showShopCartList()
+        } else {
+          this.listFold = true
+          this._hideShopCartList()
+        }
+      },
+      _showShopCartList () {
+        this.shopCartListComp = this.shopCartListComp || this.$createShopCartList({
+          $props: {
+            selectFoods: 'selectFoods'
+          },
+          $events: {
+            hide: () => {
+              this.listFold = true
+            }
+          }
+        })
+        this.shopCartListComp.show()
+      },
+      _hideShopCartList () {
+        this.shopCartListComp.hide()
       }
     },
     components: {
